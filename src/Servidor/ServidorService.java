@@ -61,6 +61,7 @@ public class ServidorService {
                     
                     if(action.equals(Action.CONEXAO)){
                         conexao(mensagem,saida);
+                        
                     } else if(action.equals(Action.DESCONEXAO)){
                         desconexao(mensagem,saida);
                         return;
@@ -81,6 +82,7 @@ public class ServidorService {
     public void conexao(Mensagem mensagem, ObjectOutputStream saida){
         this.usuariosOnline.add(mensagem.getNome());
         this.saidasOnline.add(saida);
+        mensagem.getUsuariosOnline().addAll(usuariosOnline);
         System.out.println("\n");
         System.out.println("Recebi uma conexão de: "+saida);
         System.out.println("Saidas/Usuarios onlines após inclusão: ");
@@ -89,11 +91,8 @@ public class ServidorService {
         try {
             
             for(ObjectOutputStream saidaOnline : saidasOnline){
-                
-                if(!saidaOnline.equals(saida)){
-                    System.out.println("Enviando para "+saidaOnline);
-                    saidaOnline.writeObject(mensagem);
-                }
+                                    
+                saidaOnline.writeObject(mensagem);                
             }
 
         } catch (IOException ex) {
@@ -104,6 +103,8 @@ public class ServidorService {
     public void desconexao(Mensagem mensagem, ObjectOutputStream saida ){
         System.out.println("\n");
         System.out.println("Recebi uma desconexão de: "+saida+"\n");
+        this.usuariosOnline.remove(mensagem.getNome());
+        mensagem.getUsuariosOnline().addAll(usuariosOnline);
         try {
             for(ObjectOutputStream saidaOnline : saidasOnline){
                 
@@ -114,7 +115,7 @@ public class ServidorService {
             Logger.getLogger(ServidorService.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        this.usuariosOnline.remove(mensagem.getNome());
+        
         this.saidasOnline.remove(saida);
         System.out.println("Saidas/Usuarios onlines após remoção: ");
         System.out.println(saidasOnline+"\n"+usuariosOnline);
@@ -123,6 +124,7 @@ public class ServidorService {
     public void mensagem(Mensagem mensagem){
         System.out.println("\n");
         System.out.println(mensagem.getNome() + " digitou algo, enviando...");
+        mensagem.getUsuariosOnline().addAll(usuariosOnline);
         try {
             for(ObjectOutputStream saidaOnline : saidasOnline){
                
@@ -133,4 +135,5 @@ public class ServidorService {
         }
         System.out.println("Mensagem enviada para todos...");
     }
+    
 }

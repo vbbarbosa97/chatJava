@@ -6,6 +6,7 @@ import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
 
 
 public class LeitorCliente implements Runnable{
@@ -52,7 +53,9 @@ public class LeitorCliente implements Runnable{
                     
                 } else if(action.equals(Mensagem.Action.MENSAGEM)){
                     mensagem(mensagem);
+                    
                 }
+                atualizaLista(mensagem);
             }
 
 
@@ -64,15 +67,30 @@ public class LeitorCliente implements Runnable{
     }   
 
     private void conexao(Mensagem mensagem){
-        this.telaChat.getMensagemRecebida().append(" " + mensagem.getNome() + mensagem.getTexto() + "\n");
+        if(!mensagem.getNome().equals(this.nomeCliente)){
+            this.telaChat.getMensagemRecebida().append(" " + mensagem.getNome() + mensagem.getTexto() + "\n");
+        }
     }
 
     private void desconexao(Mensagem mensagem){   
-        this.telaChat.getMensagemRecebida().append(" " + mensagem.getNome() + mensagem.getTexto() + "\n");     
+        this.telaChat.getMensagemRecebida().append(" " + mensagem.getNome() + mensagem.getTexto() + "\n");  
     }
 
     private void mensagem(Mensagem mensagem){
         this.telaChat.getMensagemRecebida().append(" " + mensagem.getNome() + " diz: " + mensagem.getTexto() + "\n");
+    }
+    
+    private void atualizaLista(Mensagem mensagem){
+        DefaultListModel listModel = new DefaultListModel();
+         
+        for (String usuario : mensagem.getUsuariosOnline()) {
+           
+            if(!usuario.equals(this.nomeCliente)){
+               listModel.addElement(usuario);
+           } 
+        }
+        
+        this.telaChat.getListaUsuarios().setModel(listModel);
     }
 }
     

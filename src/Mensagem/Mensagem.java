@@ -44,6 +44,6 @@ public class Mensagem implements Serializable{
     
     
     public enum Action{
-        CONEXAO, DESCONEXAO, MENSAGEM;
+        CONEXAO, DESCONEXAO, MENSAGEM, ATUALIZA_LISTA;
     }
 }

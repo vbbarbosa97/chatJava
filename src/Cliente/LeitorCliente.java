@@ -34,7 +34,7 @@ public class LeitorCliente implements Runnable{
                 Mensagem.Action action = mensagem.getAction();
 
                 if(action.equals(Mensagem.Action.CONEXAO)){
-
+                    conexao(mensagem);
                 } else if(action.equals(Mensagem.Action.DESCONEXAO)){
 
                 } else if(action.equals(Mensagem.Action.MENSAGEM)){
@@ -51,7 +51,7 @@ public class LeitorCliente implements Runnable{
     }   
 
     private void conexao(Mensagem mensagem){
-
+        this.telaChat.getMensagemRecebida().append(" " + mensagem.getNome() + mensagem.getTexto() + "\n");
     }
 
     private void desconexao(Mensagem mensagem){

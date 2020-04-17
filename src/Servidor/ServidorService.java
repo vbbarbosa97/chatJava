@@ -72,24 +72,35 @@ public class ServidorService {
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(ServidorService.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
+        }        
+    }
+    
+    public void conexao(Mensagem mensagem, ObjectOutputStream saida){
+        this.usuariosOnline.add(mensagem.getNome());
+        this.saidasOnline.add(saida);
         
-        public void conexao(Mensagem mensagem, ObjectOutputStream saida){
-            try {
-                saida.writeObject(mensagem);
+        System.out.println(saidasOnline+"\n"+usuariosOnline);
+        
+        try {
+            
+            for(ObjectOutputStream saidaOnline : saidasOnline){
                 
-            } catch (IOException ex) {
-                Logger.getLogger(ServidorService.class.getName()).log(Level.SEVERE, null, ex);
+                if(!saidaOnline.equals(saida)){
+                    System.out.println("Enviando para "+saidaOnline);
+                    saidaOnline.writeObject(mensagem);
+                }
             }
+
+        } catch (IOException ex) {
+            Logger.getLogger(ServidorService.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        public void desconexao(Mensagem mensagem){
-            
-        }
-        
-        public void mensagem(Mensagem mensagem){
-            
-        }
-        
+    }
+
+    public void desconexao(Mensagem mensagem){
+
+    }
+
+    public void mensagem(Mensagem mensagem){
+
     }
 }

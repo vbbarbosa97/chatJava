@@ -9,6 +9,7 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 
 public class ClienteFrame extends javax.swing.JFrame {
@@ -20,6 +21,7 @@ public class ClienteFrame extends javax.swing.JFrame {
     public ClienteFrame(String nome) {
         this.nomeUsuario = nome;
         initComponents();
+        this.mensagemEnviada.setText(null);
     }
 
     public void setService(ClienteService service) {
@@ -123,12 +125,25 @@ public class ClienteFrame extends javax.swing.JFrame {
 
     //BOTÃO ENVIAR
     private void btnEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarActionPerformed
+        String textoDigitado = this.mensagemEnviada.getText();
+        
+        if(!textoDigitado.isEmpty()){
+            this.mensagem = new Mensagem();
+            this.mensagem.setAction(Action.MENSAGEM);
+            this.mensagem.setNome(nomeUsuario);
+            this.mensagem.setTexto(this.mensagemEnviada.getText());
+            this.service.send(this.mensagem);
+            System.out.println("Solcitação enviada!");
+            this.mensagemEnviada.setText(null);
+        }else{
+            JOptionPane.showMessageDialog(this, "Operação Invalida!\nVocê esta tentando enviar uma mensagem sem texto!");
+        }
         
     }//GEN-LAST:event_btnEnviarActionPerformed
 
     //BOTÃO SAIR
     private void btnSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSairActionPerformed
-        System.out.println("Solicitando saida do chat...");
+
         this.mensagem = new Mensagem();
         this.mensagem.setAction(Action.DESCONEXAO);
         this.mensagem.setNome(nomeUsuario);
@@ -139,7 +154,7 @@ public class ClienteFrame extends javax.swing.JFrame {
 
     //BOTÃO FECHAR DO FRAME
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        System.out.println("Solicitando saida do chat...");
+        
         this.mensagem = new Mensagem();
         this.mensagem.setAction(Action.DESCONEXAO);
         this.mensagem.setNome(nomeUsuario);

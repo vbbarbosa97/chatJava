@@ -77,6 +77,7 @@ public class ClienteInit extends javax.swing.JFrame {
             }
             
             service.send(mensagem);
+            System.out.println("Solcitação enviada!");
         }
             
         

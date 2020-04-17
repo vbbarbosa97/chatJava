@@ -63,7 +63,7 @@ public class ServidorService {
                         desconexao(mensagem,saida);
                         return;
                     } else if(action.equals(Action.MENSAGEM)){
-                        
+                        mensagem(mensagem);
                     }
                     
                 }
@@ -79,8 +79,10 @@ public class ServidorService {
     public void conexao(Mensagem mensagem, ObjectOutputStream saida){
         this.usuariosOnline.add(mensagem.getNome());
         this.saidasOnline.add(saida);
-        
-        System.out.println(saidasOnline+"\n"+usuariosOnline);
+        System.out.println("\n");
+        System.out.println("Recebi uma conexão de: "+saida);
+        System.out.println("Saidas/Usuarios onlines após inclusão: ");
+        System.out.println(saidasOnline+"\n"+usuariosOnline+"\n");
         
         try {
             
@@ -98,7 +100,8 @@ public class ServidorService {
     }
 
     public void desconexao(Mensagem mensagem, ObjectOutputStream saida ){
-        
+        System.out.println("\n");
+        System.out.println("Recebi uma desconexão de: "+saida+"\n");
         try {
             for(ObjectOutputStream saidaOnline : saidasOnline){
                 
@@ -111,11 +114,21 @@ public class ServidorService {
         
         this.usuariosOnline.remove(mensagem.getNome());
         this.saidasOnline.remove(saida);
-        
+        System.out.println("Saidas/Usuarios onlines após remoção: ");
         System.out.println(saidasOnline+"\n"+usuariosOnline);
     }
 
     public void mensagem(Mensagem mensagem){
-
+        System.out.println("\n");
+        System.out.println(mensagem.getNome() + " digitou algo, enviando...");
+        try {
+            for(ObjectOutputStream saidaOnline : saidasOnline){
+               
+                saidaOnline.writeObject(mensagem);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ServidorService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        System.out.println("Mensagem enviada para todos...");
     }
 }

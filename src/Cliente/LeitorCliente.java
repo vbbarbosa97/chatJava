@@ -51,7 +51,7 @@ public class LeitorCliente implements Runnable{
                     }
                     
                 } else if(action.equals(Mensagem.Action.MENSAGEM)){
-
+                    mensagem(mensagem);
                 }
             }
 
@@ -72,7 +72,7 @@ public class LeitorCliente implements Runnable{
     }
 
     private void mensagem(Mensagem mensagem){
-
+        this.telaChat.getMensagemRecebida().append(" " + mensagem.getNome() + " diz: " + mensagem.getTexto() + "\n");
     }
 }
     

@@ -14,6 +14,7 @@ public class LeitorCliente implements Runnable{
     private ObjectInputStream entrada;
     private Socket cliente;
     private String nomeCliente;
+    static String chaveencriptacao = "0123456789abcdef";
 
     public LeitorCliente(Socket cliente,ClienteFrame telaChat, String nomeCliente ){
         
@@ -68,16 +69,16 @@ public class LeitorCliente implements Runnable{
 
     private void conexao(Mensagem mensagem){
         if(!mensagem.getNome().equals(this.nomeCliente)){
-            this.telaChat.getMensagemRecebida().append(" " + mensagem.getNome() + mensagem.getTexto() + "\n");
+            this.telaChat.getMensagemRecebida().append(" " + mensagem.getNome() + mensagem.getTexto(chaveencriptacao) + "\n");
         }
     }
 
     private void desconexao(Mensagem mensagem){   
-        this.telaChat.getMensagemRecebida().append(" " + mensagem.getNome() + mensagem.getTexto() + "\n");  
+        this.telaChat.getMensagemRecebida().append(" " + mensagem.getNome() + mensagem.getTexto(chaveencriptacao) + "\n");  
     }
 
     private void mensagem(Mensagem mensagem){
-        this.telaChat.getMensagemRecebida().append(" " + mensagem.getNome() + " diz: " + mensagem.getTexto() + "\n");
+        this.telaChat.getMensagemRecebida().append(" " + mensagem.getNome() + " diz: " + mensagem.getTexto(chaveencriptacao) + "\n");
     }
     
     private void atualizaLista(Mensagem mensagem){

@@ -13,6 +13,7 @@ public class ClienteService {
     private ObjectOutputStream saida;
     private String ipServidor;
     private int portaServidor;
+    static String chaveencriptacao = "0123456789abcdef";
     
     public ClienteService(String ipServidor,int portaServidor ){
         this.ipServidor = ipServidor;
@@ -37,7 +38,7 @@ public class ClienteService {
             System.out.println("Cliente Service diz:");
             System.out.println("Recebi uma solicitação!");
             saida.writeObject(mensagem);
-            System.out.println("Enviei essa mensagem para o server: "+mensagem.getTexto());
+            System.out.println("Enviei essa mensagem para o server: "+mensagem.getTexto(chaveencriptacao));
         } catch (IOException ex) {
             Logger.getLogger(ClienteService.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -3,8 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/vinicius.barbosa/Documents/NetBeansProjects/Chat/src/Cliente/Cliente.java</file>
             <file>file:/C:/Users/vinicius.barbosa/Documents/NetBeansProjects/Chat/src/Cliente/ClienteFrame.java</file>
+            <file>file:/C:/Users/vinicius.barbosa/Documents/NetBeansProjects/Chat/src/Servidor/ServidorFrame.java</file>
+            <file>file:/C:/Users/vinicius.barbosa/Documents/NetBeansProjects/Chat/src/Servidor/ServidorService.java</file>
+            <file>file:/C:/Users/vinicius.barbosa/Documents/NetBeansProjects/Chat/src/Servidor/Servidor.java</file>
+            <file>file:/C:/Users/vinicius.barbosa/Documents/NetBeansProjects/Chat/src/Cliente/LeitorCliente.java</file>
             <file>file:/C:/Users/vinicius.barbosa/Documents/NetBeansProjects/Chat/src/Cliente/ClienteInit.java</file>
         </group>
     </open-files>

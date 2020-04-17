@@ -18,6 +18,7 @@ public class ClienteFrame extends javax.swing.JFrame {
     private Socket cliente;
     private ClienteService service;
     private Mensagem mensagem;
+    static String chaveencriptacao = "0123456789abcdef";
     
     public ClienteFrame(String nome) {
         this.nomeUsuario = nome;
@@ -146,7 +147,7 @@ public class ClienteFrame extends javax.swing.JFrame {
             this.mensagem = new Mensagem();
             this.mensagem.setAction(Action.MENSAGEM);
             this.mensagem.setNome(nomeUsuario);
-            this.mensagem.setTexto(this.mensagemEnviada.getText());
+            this.mensagem.setTexto(this.mensagemEnviada.getText(),chaveencriptacao);
             this.service.send(this.mensagem);
             System.out.println("Solcitação enviada!");
             this.mensagemEnviada.setText(null);
@@ -162,7 +163,7 @@ public class ClienteFrame extends javax.swing.JFrame {
         this.mensagem = new Mensagem();
         this.mensagem.setAction(Action.DESCONEXAO);
         this.mensagem.setNome(nomeUsuario);
-        this.mensagem.setTexto(" saiu do chat...");
+        this.mensagem.setTexto(" saiu do chat...",chaveencriptacao);
         this.service.send(this.mensagem);
         System.out.println("Solcitação enviada!");
     }//GEN-LAST:event_btnSairActionPerformed
@@ -173,7 +174,7 @@ public class ClienteFrame extends javax.swing.JFrame {
         this.mensagem = new Mensagem();
         this.mensagem.setAction(Action.DESCONEXAO);
         this.mensagem.setNome(nomeUsuario);
-        this.mensagem.setTexto(" saiu do chat...");
+        this.mensagem.setTexto(" saiu do chat...",chaveencriptacao);
         this.service.send(this.mensagem);
         System.out.println("Solcitação enviada!");
     }//GEN-LAST:event_formWindowClosing

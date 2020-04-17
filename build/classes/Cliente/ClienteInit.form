@@ -44,10 +44,8 @@
                       <EmptySpace min="-2" pref="58" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="ipServer" pref="155" max="32767" attributes="0"/>
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="nomeUsuario" pref="155" max="32767" attributes="0"/>
-                              <Component id="portServer" max="32767" attributes="0"/>
-                          </Group>
+                          <Component id="nomeUsuario" pref="155" max="32767" attributes="0"/>
+                          <Component id="portServer" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>

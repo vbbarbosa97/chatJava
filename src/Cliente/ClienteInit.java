@@ -12,6 +12,7 @@ public class ClienteInit extends javax.swing.JFrame {
     private ClienteFrame telaChat;
     private String ipServidor;
     private int portaServidor;
+    static String chaveencriptacao = "0123456789abcdef";
     
     public ClienteInit() {
         initComponents();
@@ -115,7 +116,7 @@ public class ClienteInit extends javax.swing.JFrame {
             this.mensagem = new Mensagem();
             this.mensagem.setAction(Action.CONEXAO);
             this.mensagem.setNome(nome);
-            this.mensagem.setTexto(" entrou no chat...");
+            this.mensagem.setTexto(" entrou no chat...",chaveencriptacao);
             
             if(this.cliente == null){
                 this.service = new ClienteService(this.ipServidor, this.portaServidor);

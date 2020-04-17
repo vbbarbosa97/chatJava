@@ -60,7 +60,8 @@ public class ServidorService {
                     if(action.equals(Action.CONEXAO)){
                         conexao(mensagem,saida);
                     } else if(action.equals(Action.DESCONEXAO)){
-                        
+                        desconexao(mensagem,saida);
+                        return;
                     } else if(action.equals(Action.MENSAGEM)){
                         
                     }
@@ -96,8 +97,22 @@ public class ServidorService {
         }
     }
 
-    public void desconexao(Mensagem mensagem){
-
+    public void desconexao(Mensagem mensagem, ObjectOutputStream saida ){
+        
+        try {
+            for(ObjectOutputStream saidaOnline : saidasOnline){
+                
+                System.out.println("Enviando para "+saidaOnline);
+                saidaOnline.writeObject(mensagem);
+            }
+        } catch (IOException ex) {
+            Logger.getLogger(ServidorService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        this.usuariosOnline.remove(mensagem.getNome());
+        this.saidasOnline.remove(saida);
+        
+        System.out.println(saidasOnline+"\n"+usuariosOnline);
     }
 
     public void mensagem(Mensagem mensagem){

@@ -73,7 +73,7 @@ public class ClienteInit extends javax.swing.JFrame {
                 //passando para a tela do chat
                 this.telaChat.setService(service);
                 
-                new Thread( new LeitorCliente(this.cliente, this.telaChat)).start();
+                new Thread( new LeitorCliente(this.cliente, this.telaChat,nome )).start();
             }
             
             service.send(mensagem);

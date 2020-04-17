@@ -15,7 +15,7 @@ public class ClienteFrame extends javax.swing.JFrame {
     private String nomeUsuario;
     private Socket cliente;
     private ClienteService service;
-    private Mensagem mensagem = new Mensagem();
+    private Mensagem mensagem;
     
     public ClienteFrame(String nome) {
         this.nomeUsuario = nome;
@@ -50,7 +50,13 @@ public class ClienteFrame extends javax.swing.JFrame {
         btnSair = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
+        mensagemRecebida.setEditable(false);
         mensagemRecebida.setColumns(20);
         mensagemRecebida.setRows(5);
         jScrollPane1.setViewportView(mensagemRecebida);
@@ -115,15 +121,32 @@ public class ClienteFrame extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    //BOTÃO SAIR
+    //BOTÃO ENVIAR
     private void btnEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_btnEnviarActionPerformed
 
-    //BOTÃO ENVIAR
+    //BOTÃO SAIR
     private void btnSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSairActionPerformed
-        
+        System.out.println("Solicitando saida do chat...");
+        this.mensagem = new Mensagem();
+        this.mensagem.setAction(Action.DESCONEXAO);
+        this.mensagem.setNome(nomeUsuario);
+        this.mensagem.setTexto(" saiu do chat...");
+        this.service.send(this.mensagem);
+        System.out.println("Solcitação enviada!");
     }//GEN-LAST:event_btnSairActionPerformed
+
+    //BOTÃO FECHAR DO FRAME
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        System.out.println("Solicitando saida do chat...");
+        this.mensagem = new Mensagem();
+        this.mensagem.setAction(Action.DESCONEXAO);
+        this.mensagem.setNome(nomeUsuario);
+        this.mensagem.setTexto(" saiu do chat...");
+        this.service.send(this.mensagem);
+        System.out.println("Solcitação enviada!");
+    }//GEN-LAST:event_formWindowClosing
 
     
 

@@ -26,8 +26,11 @@ public class ClienteService {
     
     public void send(Mensagem mensagem){
         try {
+            System.out.println("\n");
+            System.out.println("Cliente Service diz:");
+            System.out.println("Recebi uma solicitação!");
             saida.writeObject(mensagem);
-            
+            System.out.println("Enviei essa mensagem para o server: "+mensagem.getTexto());
         } catch (IOException ex) {
             Logger.getLogger(ClienteService.class.getName()).log(Level.SEVERE, null, ex);
         }

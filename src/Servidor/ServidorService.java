@@ -17,10 +17,12 @@ public class ServidorService {
     private Socket cliente;
     private ArrayList<String> usuariosOnline = new ArrayList<String>();
     private ArrayList<ObjectOutputStream> saidasOnline = new ArrayList<ObjectOutputStream>();
+    private int portaServidor;
     
-    public ServidorService(){
+    public ServidorService(int portaServidor){
         try {
-            servidor = new ServerSocket(5000);
+            this.portaServidor = portaServidor;
+            servidor = new ServerSocket(this.portaServidor);
                     
             while(true){
                 cliente = servidor.accept();

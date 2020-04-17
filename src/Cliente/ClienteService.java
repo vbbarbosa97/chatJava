@@ -11,10 +11,17 @@ import java.util.logging.Logger;
 public class ClienteService {
     private Socket cliente;
     private ObjectOutputStream saida;
+    private String ipServidor;
+    private int portaServidor;
+    
+    public ClienteService(String ipServidor,int portaServidor ){
+        this.ipServidor = ipServidor;
+        this.portaServidor = portaServidor;
+    }
     
     public Socket connect(){
         try {
-            this.cliente  = new Socket("localhost", 5000);
+            this.cliente  = new Socket(this.ipServidor, this.portaServidor);
             this.saida = new ObjectOutputStream(cliente.getOutputStream());
             
         } catch (IOException ex) {

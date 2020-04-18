@@ -15,9 +15,9 @@ import java.util.logging.Logger;
 public class ServidorService {
     private ServerSocket servidor;
     private Socket cliente;
-    private ArrayList<String> usuariosOnline = new ArrayList<String>();
-    private ArrayList<ObjectOutputStream> saidasOnline = new ArrayList<ObjectOutputStream>();
     private int portaServidor;
+    private ArrayList<SalaService> salas = new ArrayList<SalaService>();
+    private ArrayList<String> listaNomeSalas = new ArrayList<String>();
     
     public ServidorService(int portaServidor){
         try {
@@ -59,16 +59,22 @@ public class ServidorService {
                     
                     Action action = mensagem.getAction();
                     
-                    if(action.equals(Action.CONEXAO)){
-                        conexao(mensagem,saida);
+                    if(action.equals(Action.CONEXAO_SERVER)){
+                        conexaoServer(mensagem,saida);
                         
-                    } else if(action.equals(Action.DESCONEXAO)){
-                        desconexao(mensagem,saida);
+                    } else if(action.equals(Action.CONEXAO_SALA)){
+                        conexaoSala(mensagem, saida);
+                        
+                    } else if(action.equals(Action.DESCONEXAO_SERVER)){
+                        desconexaoServer(mensagem, saida);
                         return;
+                        
+                    } else if(action.equals(Action.DESCONEXAO_SALA)){
+                         desconexaoSala(mensagem, saida);
+                         return;
                     } else if(action.equals(Action.MENSAGEM)){
                         mensagem(mensagem);
-                    }
-                    
+                    }                 
                 }
                 
             } catch (IOException ex) {
@@ -76,64 +82,136 @@ public class ServidorService {
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(ServidorService.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
         }        
     }
     
-    public void conexao(Mensagem mensagem, ObjectOutputStream saida){
-        this.usuariosOnline.add(mensagem.getNome());
-        this.saidasOnline.add(saida);
-        mensagem.getUsuariosOnline().addAll(usuariosOnline);
+    //Envio para o cliente que se conectou a lista de salas criadas
+    public void conexaoServer(Mensagem mensagem, ObjectOutputStream saida){
         System.out.println("\n");
-        System.out.println("Recebi uma conexão de: "+saida);
-        System.out.println("Saidas/Usuarios onlines após inclusão: ");
-        System.out.println(saidasOnline+"\n"+usuariosOnline+"\n");
-        
+        System.out.println("Recebi uma conexão no servidor");
+        mensagem.getSalas().addAll(listaNomeSalas);
+        System.out.println("Enviei o nome das salas");
+        System.out.println(listaNomeSalas);
         try {
             
-            for(ObjectOutputStream saidaOnline : saidasOnline){
-                                    
-                saidaOnline.writeObject(mensagem);                
-            }
-
+            saida.writeObject(mensagem);
+            
         } catch (IOException ex) {
             Logger.getLogger(ServidorService.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public void desconexao(Mensagem mensagem, ObjectOutputStream saida ){
-        System.out.println("\n");
-        System.out.println("Recebi uma desconexão de: "+saida+"\n");
-        this.usuariosOnline.remove(mensagem.getNome());
-        mensagem.getUsuariosOnline().addAll(usuariosOnline);
-        try {
-            for(ObjectOutputStream saidaOnline : saidasOnline){
+    /*
+    Se existir a sala que ele passou pela mensagem e adiciono o nome e a saida dele na sala
+    e envio para todos naquela sala que ele entrou, atualizo a lista de onlines tambem
+    Se não existir eu apenas crio a sala colocando ele
+    */
+    public void conexaoSala(Mensagem mensagem, ObjectOutputStream saida ){
+        //Verificando se a sala passada ja existe
+        System.out.println("Recebi uma conexao na sala " + mensagem.getNomeSala());
+        if(this.listaNomeSalas.contains(mensagem.getNomeSala())){
+            //setando esse usuario na sala que escolheu
+            System.out.println("Adicionando usuario na sala");
+            for(SalaService sala : salas){
                 
-                System.out.println("Enviando para "+saidaOnline);
-                saidaOnline.writeObject(mensagem);
+                if(sala.getNome().equals(mensagem.getNomeSala())){
+                    
+                    sala.getUsuariosOnline().add(mensagem.getNome());
+                    sala.getSaidasOnline().add(saida);
+                    mensagem.getUsuariosOnline().addAll(sala.getUsuariosOnline());
+                    System.out.println(mensagem.getUsuariosOnline());
+                    //enviando para todos dentro daquela sala
+                    for(ObjectOutputStream saidaOnline : sala.getSaidasOnline()){
+                        try {
+                            saidaOnline.writeObject(mensagem);
+                            
+                        } catch (IOException ex) {
+                            Logger.getLogger(ServidorService.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
             }
+        }
+        else{
+            System.out.println("\nSala sendo Criada");
+            //Criando uma sala e setando no array de salas
+            SalaService novaSala = new SalaService();
+            novaSala.setNome(mensagem.getNomeSala());
+            novaSala.getSaidasOnline().add(saida);
+            novaSala.getUsuariosOnline().add(mensagem.getNome());
+            this.salas.add(novaSala);
+            this.listaNomeSalas.add(mensagem.getNomeSala());
+        }
+    }
+    
+    //Apenas quebro o while e envio a mensagem para ele mesmo para fechar o socket
+    public void desconexaoServer(Mensagem mensagem, ObjectOutputStream saida){
+        try {
+            saida.writeObject(mensagem);
+            
         } catch (IOException ex) {
             Logger.getLogger(ServidorService.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    /*
+    Se a sala só tiver ele deleto a sala com tudo junto
+    Se não eu mando a mensagem de saida para todos e retiro ele da sala e 
+    quebro o while
+    */
+    public void desconexaoSala(Mensagem mensagem, ObjectOutputStream saida ){
         
-        
-        this.saidasOnline.remove(saida);
-        System.out.println("Saidas/Usuarios onlines após remoção: ");
-        System.out.println(saidasOnline+"\n"+usuariosOnline);
+        for(SalaService sala : salas){
+            //encontro a sala que ele me passou na mensagem
+            if(sala.getNome().equals(mensagem.getNomeSala())){
+                
+                if(sala.getSaidasOnline().size() == 1){
+                    try {
+                        saida.writeObject(mensagem);
+                        salas.remove(sala);
+                        
+                    } catch (IOException ex) {
+                        Logger.getLogger(ServidorService.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                else{
+
+                    sala.getUsuariosOnline().remove(mensagem.getNome());
+                    mensagem.getUsuariosOnline().addAll(sala.getUsuariosOnline());
+                    
+                    //mando mensagem para todos
+                    for(ObjectOutputStream saidaOnline : sala.getSaidasOnline()){
+                        try {
+                            saidaOnline.writeObject(mensagem);
+                            
+                        } catch (IOException ex) {
+                            Logger.getLogger(ServidorService.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    sala.getSaidasOnline().remove(saida);
+                }
+            }
+        }
     }
 
+    //Mando a mensagem pra todos da sala
     public void mensagem(Mensagem mensagem){
-        System.out.println("\n");
-        System.out.println(mensagem.getNome() + " digitou algo, enviando...");
-        mensagem.getUsuariosOnline().addAll(usuariosOnline);
-        try {
-            for(ObjectOutputStream saidaOnline : saidasOnline){
-               
-                saidaOnline.writeObject(mensagem);
+        
+        for(SalaService sala : salas){
+            
+            if(sala.getNome().equals(mensagem.getNomeSala())){
+                mensagem.getUsuariosOnline().addAll(sala.getUsuariosOnline());
+                for(ObjectOutputStream saidaOnline : sala.getSaidasOnline()){
+                    try {
+                        saidaOnline.writeObject(mensagem);
+                        
+                    } catch (IOException ex) {
+                        Logger.getLogger(ServidorService.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
             }
-        } catch (IOException ex) {
-            Logger.getLogger(ServidorService.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("Mensagem enviada para todos...");
     }
     
 }

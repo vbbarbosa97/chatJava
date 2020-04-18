@@ -9,6 +9,7 @@ public class ClienteInit extends javax.swing.JFrame {
     private Mensagem mensagem;
     private Socket cliente;
     private ClienteService service;
+    private ClienteSala telaSala;
     private ClienteFrame telaChat;
     private String ipServidor;
     private int portaServidor;
@@ -50,8 +51,12 @@ public class ClienteInit extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel3.setText("Porta do Servidor: ");
 
+        portServer.setText("90");
+
         jLabel4.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel4.setText("IP do Servidor:");
+
+        ipServer.setText("localhost");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -75,9 +80,8 @@ public class ClienteInit extends javax.swing.JFrame {
                         .addGap(58, 58, 58)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(ipServer, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(nomeUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
-                                .addComponent(portServer)))))
+                            .addComponent(nomeUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
+                            .addComponent(portServer))))
                 .addContainerGap(242, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -107,33 +111,41 @@ public class ClienteInit extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnEntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEntrarActionPerformed
+        //Pegando as informações de conexão
         this.nome = nomeUsuario.getText();
         this.ipServidor = this.ipServer.getText();
         this.portaServidor = Integer.parseInt(this.portServer.getText());
-        this.telaChat = new ClienteFrame(nome);
+        
+        //Criando as telas da Sala e do Chat
+        this.telaChat = new ClienteFrame(this.nome);
+        this.telaSala = new ClienteSala(this.nome, this.telaChat);
+        
         
         if(!nome.isEmpty()){
+            //Criando um objeto Mensagem e setando 
             this.mensagem = new Mensagem();
-            this.mensagem.setAction(Action.CONEXAO);
+            this.mensagem.setAction(Action.CONEXAO_SERVER);
             this.mensagem.setNome(nome);
-            this.mensagem.setTexto(" entrou no chat...",chaveencriptacao);
+            this.mensagem.setTexto(" conectando ao server!",chaveencriptacao);
             
             if(this.cliente == null){
+                //Conectando ao servidor e recebendo o socket do cliente
                 this.service = new ClienteService(this.ipServidor, this.portaServidor);
                 this.cliente = service.connect();
                 
-                //passando para a tela do chat
-                this.telaChat.setService(service);
+                this.telaSala.setService(this.service);
                 
-                new Thread( new LeitorCliente(this.cliente, this.telaChat,nome )).start();
+                //Colocando na Thread o leitor do cliente que ouve as mensgens do server
+                new Thread( new LeitorCliente(this.cliente, this.telaChat, nome, this.telaSala )).start();
             }
             
+            //envio a mensagem de conexão para o server
             service.send(mensagem);
             System.out.println("Solcitação enviada!");
         }
             
-        
-        telaChat.setVisible(true);
+       
+        telaSala.setVisible(true);
         dispose();
     }//GEN-LAST:event_btnEntrarActionPerformed
 

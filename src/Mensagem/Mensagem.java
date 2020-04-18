@@ -12,13 +12,28 @@ import javax.crypto.spec.SecretKeySpec;
 public class Mensagem implements Serializable{
     private String nome;
     private String textodecriptado;
+
+    public ArrayList<String> getSalas() {
+        return salas;
+    }
+
+    public void setSalas(ArrayList<String> salas) {
+        this.salas = salas;
+    }
+    private ArrayList<String> salas = new ArrayList<String>();
     private ArrayList<String> usuariosOnline = new ArrayList<String>();
     private Action action;
     static String IV = "AAAAAAAAAAAAAAAA";
     byte[] textoencriptado;
-    
-    
-    
+    private String nomeSala;
+
+    public String getNomeSala() {
+        return nomeSala;
+    }
+
+    public void setNomeSala(String nomeSala) {
+        this.nomeSala = nomeSala;
+    }
 
     public String getNome() {
         return nome;
@@ -68,7 +83,7 @@ public class Mensagem implements Serializable{
     
     
     public enum Action{
-        CONEXAO, DESCONEXAO, MENSAGEM, ATUALIZA_LISTA;
+        CONEXAO_SALA, CONEXAO_SERVER, DESCONEXAO_SERVER,DESCONEXAO_SALA, MENSAGEM;
     }
     
     public static byte[] encrypt(String textopuro, String chaveencriptacao) throws Exception {

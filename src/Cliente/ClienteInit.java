@@ -51,12 +51,8 @@ public class ClienteInit extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel3.setText("Porta do Servidor: ");
 
-        portServer.setText("90");
-
         jLabel4.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         jLabel4.setText("IP do Servidor:");
-
-        ipServer.setText("localhost");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);

@@ -18,6 +18,8 @@ public class ServidorService {
     private int portaServidor;
     private ArrayList<SalaService> salas = new ArrayList<SalaService>();
     private ArrayList<String> listaNomeSalas = new ArrayList<String>();
+    private ArrayList<SalaService> salaParaRemover = new ArrayList<SalaService>();
+    private boolean vaiRemover = false;
     
     public ServidorService(int portaServidor){
         try {
@@ -70,8 +72,9 @@ public class ServidorService {
                         return;
                         
                     } else if(action.equals(Action.DESCONEXAO_SALA)){
-                         desconexaoSala(mensagem, saida);
-                         return;
+                        desconexaoSala(mensagem, saida);
+                        return;
+                         
                     } else if(action.equals(Action.MENSAGEM)){
                         mensagem(mensagem);
                     }                 
@@ -161,22 +164,28 @@ public class ServidorService {
     quebro o while
     */
     public void desconexaoSala(Mensagem mensagem, ObjectOutputStream saida ){
+        System.out.println("Ouvi uma desconexao de sala"); 
         
-        for(SalaService sala : salas){
+        for(SalaService sala : this.salas){
             //encontro a sala que ele me passou na mensagem
             if(sala.getNome().equals(mensagem.getNomeSala())){
                 
                 if(sala.getSaidasOnline().size() == 1){
+                    System.out.println("Identifiquei que só tem uma pessoa");
+                    this.listaNomeSalas.remove(sala.getNome());
                     try {
+                        System.out.println("envie para o cara que saiu");
                         saida.writeObject(mensagem);
-                        salas.remove(sala);
                         
                     } catch (IOException ex) {
                         Logger.getLogger(ServidorService.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                    System.out.println("removi a sala");
+                    this.salaParaRemover.add(sala);
+                    this.vaiRemover = true;
                 }
                 else{
-
+                    System.out.println("Identifiquei que só tem mais de uma pessoa");
                     sala.getUsuariosOnline().remove(mensagem.getNome());
                     mensagem.getUsuariosOnline().addAll(sala.getUsuariosOnline());
                     
@@ -193,6 +202,11 @@ public class ServidorService {
                 }
             }
         }
+        
+        if(this.vaiRemover){
+            this.salas.remove(this.salaParaRemover);
+        }
+        this.vaiRemover = false;
     }
 
     //Mando a mensagem pra todos da sala

@@ -55,10 +55,10 @@ public class LeitorCliente implements Runnable{
                 } else if(action.equals(Action.DESCONEXAO_SALA)){
                     
                     if(mensagem.getNome().equals(this.nomeCliente)){
-                            this.cliente.close();
-                            System.exit(0);
-                            return;
-                        }
+                        this.cliente.close();
+                        System.exit(0);
+                        return;
+                    }
                     else{
                         desconexaoSala(mensagem);
                     }   
@@ -81,7 +81,8 @@ public class LeitorCliente implements Runnable{
         System.out.println("\nCliente diz: ouvi uma conexão no server");
         System.out.println(mensagem.getSalas()+"\n");
         DefaultListModel listSalas = new DefaultListModel();
-         
+        this.telaSala.getNomeDaSalas().addAll(mensagem.getSalas());
+        
         for (String sala : mensagem.getSalas()) {
            
             listSalas.addElement(sala);

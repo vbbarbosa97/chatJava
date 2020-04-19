@@ -27,7 +27,6 @@ public class ClienteFrame extends javax.swing.JFrame {
         this.mensagemEnviada.setText(null);
         this.btnEnviar.setBackground(Color.green);
         this.btnSair.setBackground(Color.red);
-        this.nomeDaSala.setBackground(Color.black);
     }
 
     public void setNomeSala(String nomeSala) {
@@ -104,8 +103,7 @@ public class ClienteFrame extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         jLabel2.setText("NOME DA SALA: ");
 
-        nomeDaSala.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
-        nomeDaSala.setForeground(new java.awt.Color(255, 255, 255));
+        nomeDaSala.setFont(new java.awt.Font("SansSerif", 1, 18)); // NOI18N
         nomeDaSala.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -187,24 +185,24 @@ public class ClienteFrame extends javax.swing.JFrame {
     }
 //BOTÃO SAIR
     private void btnSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSairActionPerformed
-
+        System.out.println("Solicitei saida do chat");
         this.mensagem = new Mensagem();
         this.mensagem.setAction(Action.DESCONEXAO_SALA);
         this.mensagem.setNomeSala(this.nomeSala);
         this.mensagem.setNome(this.nomeUsuario);
-        this.mensagem.setTexto(" saiu do sala",chaveencriptacao);
+        this.mensagem.setTexto(" saiu da sala...",chaveencriptacao);
         this.service.send(this.mensagem);
         System.out.println("Solcitação enviada!");
     }//GEN-LAST:event_btnSairActionPerformed
 
     //BOTÃO FECHAR DO FRAME
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        
+        System.out.println("Solicitei saida do chat");
         this.mensagem = new Mensagem();
         this.mensagem.setAction(Action.DESCONEXAO_SALA);
         this.mensagem.setNomeSala(this.nomeSala);
         this.mensagem.setNome(nomeUsuario);
-        this.mensagem.setTexto(" saiu do sala",chaveencriptacao);
+        this.mensagem.setTexto(" saiu da sala...",chaveencriptacao);
         this.service.send(this.mensagem);
         System.out.println("Solcitação enviada!");
     }//GEN-LAST:event_formWindowClosing

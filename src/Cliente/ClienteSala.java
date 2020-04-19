@@ -4,6 +4,7 @@ package Cliente;
 import Mensagem.Mensagem;
 import Mensagem.Mensagem.Action;
 import java.net.Socket;
+import java.util.ArrayList;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 
@@ -14,6 +15,11 @@ public class ClienteSala extends javax.swing.JFrame {
     private Mensagem mensagem;
     static String chaveencriptacao = "0123456789abcdef";
     private ClienteFrame telaChat;
+    private ArrayList<String> nomeDaSalas = new ArrayList<String>();
+
+    public ArrayList<String> getNomeDaSalas() {
+        return nomeDaSalas;
+    }
     
     public ClienteSala(String nome, ClienteFrame telaChat) {
         this.nomeUsuario = nome;
@@ -165,35 +171,45 @@ public class ClienteSala extends javax.swing.JFrame {
 
     //BOTÃO DE ENTRAR EM UMA SALA JA EXISTENTE
     private void btnEntrarSalaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEntrarSalaActionPerformed
+        
         this.nomeSala = this.txtEntrarSala.getText();
-        System.out.println("Entrar nessa sala: "+nomeSala);
+        
+        System.out.println("Nome da sala que quero entrar: "+ this.nomeSala);
         if(!this.nomeSala.isEmpty()){
-            this.mensagem = new Mensagem();
-            this.mensagem.setAction(Action.CONEXAO_SALA);
-            this.mensagem.setNomeSala(this.nomeSala);
-            this.mensagem.setNome(this.nomeUsuario);
-            this.mensagem.setTexto(" entrou na sala...",chaveencriptacao);
-            this.service.send(this.mensagem);
             
-            this.telaChat.setService(this.service);
-            this.telaChat.setNomeSala(this.nomeSala);
-            this.telaChat.getNomeDaSala().setText(this.nomeSala);
-            this.telaChat.setVisible(true);
-            
-            dispose();
+            if(this.nomeDaSalas.isEmpty()){
+                JOptionPane.showMessageDialog(this, "Operação Invalida!\nNão existe salas criadas, crie sua sala!");
+            }
+            else{
+                  
+                System.out.println("Entrar nessa sala: "+nomeSala);
+                this.mensagem = new Mensagem();
+                this.mensagem.setAction(Action.CONEXAO_SALA);
+                this.mensagem.setNomeSala(this.nomeSala);
+                this.mensagem.setNome(this.nomeUsuario);
+                this.mensagem.setTexto(" entrou na sala...",chaveencriptacao);
+                this.service.send(this.mensagem);
+
+                this.telaChat.setService(this.service);
+                this.telaChat.setNomeSala(this.nomeSala);
+                this.telaChat.getNomeDaSala().setText(this.nomeSala);
+                this.telaChat.setVisible(true);
+
+                this.nomeSala = null;
+                dispose();     
+            }
         }
         else{
             JOptionPane.showMessageDialog(this, "Operação Invalida!\nDigite uma sala!");
         }
-        
     }//GEN-LAST:event_btnEntrarSalaActionPerformed
 
     //BOTÃO DE CRIAR UMA SALA
     private void btnCriarSalaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCriarSalaActionPerformed
         this.nomeSala = this.txtCriarSala.getText();
-        System.out.println("Criar essa sala: "+nomeSala);
+        
         if(!this.nomeSala.isEmpty()){
-            
+            System.out.println("Criar essa sala: "+nomeSala);
             this.mensagem = new Mensagem();
             this.mensagem.setAction(Action.CONEXAO_SALA);
             this.mensagem.setNomeSala(this.nomeSala);
@@ -205,6 +221,9 @@ public class ClienteSala extends javax.swing.JFrame {
             this.telaChat.getNomeDaSala().setText(this.nomeSala);
             this.telaChat.setNomeSala(this.nomeSala);
             this.telaChat.setVisible(true);
+            
+            this.nomeSala = null;
+            this.txtCriarSala.setText(null);
             
             dispose();
         }
